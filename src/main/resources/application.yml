@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: llm-gateway
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/llm_gateway
+    username: llm_gateway
+    password: llm_gateway_dev
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+llm:
+  providers:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      base-url: https://api.openai.com/v1
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY:}
+      base-url: https://api.anthropic.com/v1
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+
+  cache:
+    enabled: true
+    ttl-minutes: 60
+
+  rate-limit:
+    enabled: true
+    requests-per-minute: 60
