@@ -13,14 +13,21 @@ import java.util.List;
 public class ChatService {
 
     private final List<LlmProvider> providers;
+    private final CacheService cacheService;
 
     public Mono<ChatResponse> chat(ChatRequest request) {
+        var cached = cacheService.get(request);
+        if (cached.isPresent()) {
+            return Mono.just(cached.get());
+        }
+
         LlmProvider provider = providers.stream()
                 .filter(p -> p.supports(request.provider()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Unsupported provider: " + request.provider()));
 
-        return provider.chat(request);
+        return provider.chat(request)
+                .doOnNext(response -> cacheService.put(request, response));
     }
 }
