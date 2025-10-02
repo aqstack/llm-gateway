@@ -54,8 +54,40 @@ curl http://localhost:8080/api/v1/health
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/v1/health` | Health check |
-| POST | `/api/v1/chat` | Chat completion (coming soon) |
-| GET | `/api/v1/usage` | Usage statistics (coming soon) |
+| POST | `/api/v1/keys` | Create API key |
+| GET | `/api/v1/keys` | List API keys |
+| DELETE | `/api/v1/keys/{id}` | Deactivate API key |
+| POST | `/api/v1/chat` | Chat completion |
+| GET | `/api/v1/usage` | Usage statistics |
+
+## Usage Example
+
+### Create an API key
+```bash
+curl -X POST http://localhost:8080/api/v1/keys \
+  -H "Content-Type: application/json" \
+  -d '{"name": "my-key", "owner": "user@example.com"}'
+```
+
+### Send a chat request
+```bash
+curl -X POST http://localhost:8080/api/v1/chat \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: llmgw_your_key_here" \
+  -d '{
+    "provider": "openai",
+    "model": "gpt-4o-mini",
+    "messages": [
+      {"role": "user", "content": "Hello!"}
+    ]
+  }'
+```
+
+### Check usage
+```bash
+curl http://localhost:8080/api/v1/usage \
+  -H "X-API-Key: llmgw_your_key_here"
+```
 
 ## License
 
